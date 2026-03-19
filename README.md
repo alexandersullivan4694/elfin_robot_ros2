@@ -4,6 +4,8 @@ Elfin Robot
 
 Chinese version of the README -> please [click here](./README_cn.md)
 
+**Docker Support:** For Docker-based installation and usage, please see [DOCKER.md](./DOCKER.md) / Docker 安装和使用指南请查看 [DOCKER.md](./DOCKER.md)
+
 
 <p align="center">
   <img src="docs/images/elfin.png" />

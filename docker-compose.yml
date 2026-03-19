@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  elfin_robot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elfin_robot_ros2:latest
+    container_name: elfin_robot_ros2
+    privileged: true  # Required for hardware access if using real robot
+    network_mode: host  # Required for ROS2 DDS communication
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=0
+    volumes:
+      # Mount source code for development
+      - .:/ros2_ws/src/elfin_robot_ros2
+      # Share X11 socket for GUI applications
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Preserve bash history
+      - elfin_bash_history:/root/.bash_history
+    devices:
+      # Mount devices for hardware access (uncomment if needed)
+      # - /dev/net/tun:/dev/net/tun
+    stdin_open: true
+    tty: true
+    command: bash
+
+  # Gazebo simulation service
+  elfin_gazebo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: elfin_robot_ros2:latest
+    container_name: elfin_gazebo
+    privileged: true
+    network_mode: host
+    environment:
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      - ROS_DOMAIN_ID=0
+    volumes:
+      - .:/ros2_ws/src/elfin_robot_ros2
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    stdin_open: true
+    tty: true
+    # Example launch command for Elfin3 simulation
+    command: >
+      bash -c "source /ros2_ws/install/setup.bash &&
+               ros2 launch elfin3_ros2_moveit2 elfin3.launch.py"
+
+volumes:
+  elfin_bash_history:
